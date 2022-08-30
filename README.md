@@ -16,3 +16,6 @@ Ability to understand and apply the following concepts in machine learning:
 # Assignments List
 
 ## 1. Portfolio Setup
+
+- GitHub portfolio for [CS 4375.003 - Introduction to Machine Learning - F22](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22)
+- A summary on the main branches of ML and reflect on my personal interest in ML [Overview of ML.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Portfolio%20Setup/Overview%20of%20ML_ldn190002.pdf)
