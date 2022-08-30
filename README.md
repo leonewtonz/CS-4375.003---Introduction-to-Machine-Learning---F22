@@ -1,0 +1,2 @@
+# CS-4375.003---Introduction-to-Machine-Learning---F22
+CS 4375 Introduction to Machine Learning (3 semester credit hours) Algorithms for creating computer programs that can improve their performance through learning. Topics include: cross-validation, decision trees, neural nets, statistical tests, Bayesian learning, computational learning theory, instance-based learning, reinforcement learning, bagging, boosting, support vector machines, Hidden Markov Models, clustering, and semi-supervised and unsupervised learning techniques.
