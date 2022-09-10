@@ -1,0 +1,16 @@
+1. helloworld in cpp
+https://www.geeksforgeeks.org/difference-between-cout-and-stdcout-in-c/
+
+2. Link to how to create cpp file in Visual Studio
+https://code.visualstudio.com/docs/languages/cpp
+
+3. Instruction to install cpp compiler in window
+https://code.visualstudio.com/docs/languages/cpp
+
+In Visual Code
+- To compile: Terminal --> Run Build Task
+- To run: Right Click --> Run Code
+
+In cmd
+- To compile: g++ file.cpp -o name_of_output
+- To run: name_of_output
