@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <cmath>
+
 
 using namespace std;
 
@@ -43,10 +45,11 @@ double median(vector<double> vect){
     return median;
 }
 
-// // Range function
-// void range(vector<double> vect){
-//     cout << "Min:" << vect.front() << "Max:" << vect.back() << endl
-// }
+// Range function
+void range(vector<double> vect){
+    cout << vect.front();
+    cout << " " << vect.back() << endl;
+}
 
 // Print Stats function
 void print_stats(vector<double> vect){
@@ -56,10 +59,59 @@ void print_stats(vector<double> vect){
     cout << "Sum: " << sum(vect) << endl;
     cout << "Mean: " << mean(vect) << endl;
     cout << "Median: " << median(vect) << endl;
-    // cout << "Range: " << range(vect) << endl;
-    
-
+    cout << "Range: ";  range(vect);
 }
+
+// Covariance function
+double covar(vector<double> rm_v, vector<double> medv_v){
+    double covar = 0;
+    // double sumValue = 0;
+    double eValue = 0;
+
+    double rmMean = mean(rm_v);
+    double medvMean = mean(medv_v);
+
+    int n = rm_v.size();
+
+    for (int i = 0; i < n; i++){
+        eValue = eValue + ((rm_v.at(i) - rmMean) * (medv_v.at(i) - medvMean));
+    }
+    covar = eValue / (n-1);
+    return covar;
+}  
+
+// Correlation function
+double cor(vector<double> rm_v, vector<double> medv_v){
+    double cor = 0;
+
+    double covarValue = covar(rm_v, medv_v);
+    
+    double eValue_rm = 0;
+    double eValue_medv = 0;
+
+    double standDev_rm = 0;
+    double standDev_medv = 0;
+
+
+    double rmMean = mean(rm_v);
+    double medvMean = mean(medv_v);
+    
+    int n = rm_v.size();
+
+    for (int i = 0; i < n; i++){
+        eValue_rm = eValue_rm + pow((rm_v.at(i) - rmMean),2);
+        eValue_medv = eValue_medv + pow((medv_v.at(i) - medvMean),2);
+    }
+    
+    standDev_rm = sqrt(eValue_rm / n);
+    standDev_medv =sqrt(eValue_medv / n);
+
+    cor = covarValue / (standDev_rm * standDev_medv);
+    return cor;
+}  
+
+
+
 int main(int argc, char** argv) 
 {
     ifstream        inFS;  // Input file stream
@@ -102,11 +154,11 @@ int main(int argc, char** argv)
     rm.resize(numObservations);
     medv.resize(numObservations);
 
-/*debug
+//debug
 cout << "1st " << rm.front() << endl;
 cout << "last " << rm.back() << endl;
 cout << "last " << rm.at((rm.size()-1)) << endl;
-*/
+
 
     cout << "New length " << rm.size() << endl;
     
@@ -125,12 +177,12 @@ cout << "last " << rm.at((rm.size()-1)) << endl;
     cout << "\nStats for rm" << endl;
     print_stats(rm);
 
-    // cout << "\nStats for medv" << endl;
-    // print_stats(medv);
+    cout << "\nStats for medv" << endl;
+    print_stats(medv);
 
-    // cout << "\nCovariance = " << covar(rm, medv) endl;
-    // cout << "\nCorrelation = " << cor(rm, medv) endl;
-    // cout << "\nProgram terminated" << endl;
+    cout << "\nCovariance = " << covar(rm, medv) << endl;
+    cout << "\nCorrelation = " << cor(rm, medv) << endl;
+    cout << "\nProgram terminated" << endl;
     
     return 0;
 }
