@@ -5,46 +5,61 @@
 
 using namespace std;
 
-// // Sum function
-// double sum(vector<double> vect){
-//     double sum = 0;
-//     for (int i = 0; i < vect.size(); i++){
-//         sum = sum + vect.at(i);
-//     }
-//     return sum;
-// }
+// Sum function
+double sum(vector<double> vect){
+    double sum = 0;
+    for (int i = 0; i < vect.size(); i++){
+        sum = sum + vect.at(i);
+    }
+    return sum;
+}
 
-// // Mean function
-// double mean(vector<double> vect){
-//     double mean = 0;
-//     double sum = 0;
-//     for (int i = 0; i < vect.size(); i++){
-//         sum = sum + vect.at(i);
-//     }
-//     mean = sum / vect.size();
-//     return mean;
-// }
+// Mean function
+double mean(vector<double> vect){
+    double mean = 0;
+    double sum = 0;
+    for (int i = 0; i < vect.size(); i++){
+        sum = sum + vect.at(i);
+    }
+    mean = sum / vect.size();
+    return mean;
+}
 
-// // Median function
-// double median(vector<double> vect){   
-//     double median = 0;
-//     sort(vect.begin(),vect.end());  // Sorting in Ascending order
-    
-//     int n = vect.size();
+// Median function
+double median(vector<double> vect){   
+    double median = 0;    
+    int n = vect.size();
 
    
-//     if ( n % 2 == 0){  // Even Case
+    if ( n % 2 == 0){  // Even Case
+        double e2 = vect.at((n/2) - 1);
+        double e1 = vect.at(n/2);
+        median = (e1+e2) / 2;
+    }   
+    else{              // Odd Case
+        median =  vect.at((n/2));
+    }               
 
-//     }   
-//     else{              // Odd Case
-//         median =  vect.at((n/2));
-//     }               
+    return median;
+}
 
-//     return median;
+// // Range function
+// void range(vector<double> vect){
+//     cout << "Min:" << vect.front() << "Max:" << vect.back() << endl
 // }
 
+// Print Stats function
+void print_stats(vector<double> vect){
+ 
+    sort(vect.begin(),vect.end());  // Sorting in Ascending order
+    
+    cout << "Sum: " << sum(vect) << endl;
+    cout << "Mean: " << mean(vect) << endl;
+    cout << "Median: " << median(vect) << endl;
+    // cout << "Range: " << range(vect) << endl;
+    
 
-
+}
 int main(int argc, char** argv) 
 {
     ifstream        inFS;  // Input file stream
@@ -87,15 +102,14 @@ int main(int argc, char** argv)
     rm.resize(numObservations);
     medv.resize(numObservations);
 
-// cout << "1st " << rm.front() << endl;
-// cout << "last " << rm.back() << endl;
-// cout << "last " << rm.at((rm.size()-1)) << endl;
-
+/*debug
+cout << "1st " << rm.front() << endl;
+cout << "last " << rm.back() << endl;
+cout << "last " << rm.at((rm.size()-1)) << endl;
+*/
 
     cout << "New length " << rm.size() << endl;
     
-
-
     cout << "Closing file Boston.csv" << endl;
     inFS.close();    // Done with file, close it
 
@@ -109,14 +123,7 @@ int main(int argc, char** argv)
 
 
     cout << "\nStats for rm" << endl;
-    
-  
-    // cout << "Sum: " << sum(rm) << endl;
-    // cout << "Mean: " << mean(rm) << endl;
-    // cout << "Median: " << median(rm) << endl;
-
-   
-    // print_stats(rm);
+    print_stats(rm);
 
     // cout << "\nStats for medv" << endl;
     // print_stats(medv);
