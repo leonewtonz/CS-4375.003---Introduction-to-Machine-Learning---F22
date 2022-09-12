@@ -1,13 +1,20 @@
+/*
+    CS 4375 - Intro to Machine Learning
+    Dr. Karen Mazidi
+    Student - Leo Nguyen
+    NetID - ldn190002
+*/ 
+
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cmath>
 
-
 using namespace std;
 
 // Sum function
+// This will sum the value of all elements
 double sum(vector<double> vect){
     double sum = 0;
     for (int i = 0; i < vect.size(); i++){
@@ -17,6 +24,7 @@ double sum(vector<double> vect){
 }
 
 // Mean function
+// Mean = Average = sum of all elements / number of element
 double mean(vector<double> vect){
     double mean = 0;
     double sum = 0;
@@ -28,14 +36,19 @@ double mean(vector<double> vect){
 }
 
 // Median function
+// Median mean we take the medium value of the set of element
+// Let n is the number of element. S is the set of element. Index start at 0
+// There are 2 cases:
+//  -   n is "Odd": median = S[n/2] = Value of set S at index n/2
+//  -   n is "Even": median = {S[n/2] + S[(n/2)-1]} / 2
 double median(vector<double> vect){   
     double median = 0;    
     int n = vect.size();
 
    
     if ( n % 2 == 0){  // Even Case
-        double e2 = vect.at((n/2) - 1);
         double e1 = vect.at(n/2);
+        double e2 = vect.at((n/2) - 1);   
         median = (e1+e2) / 2;
     }   
     else{              // Odd Case
@@ -46,9 +59,18 @@ double median(vector<double> vect){
 }
 
 // Range function
-void range(vector<double> vect){
-    cout << vect.front();
-    cout << " " << vect.back() << endl;
+// range = max -min
+double range(vector<double> vect){
+    double range = 0;
+    double max = 0;
+    double min = 0;
+    
+    min = vect.front();
+    max = vect.back();
+
+    range = max - min;
+
+    return range;
 }
 
 // Print Stats function
@@ -59,14 +81,14 @@ void print_stats(vector<double> vect){
     cout << "Sum: " << sum(vect) << endl;
     cout << "Mean: " << mean(vect) << endl;
     cout << "Median: " << median(vect) << endl;
-    cout << "Range: ";  range(vect);
+    cout << "Range: " << range(vect) << endl;
 }
 
 // Covariance function
 double covar(vector<double> rm_v, vector<double> medv_v){
     double covar = 0;
-    // double sumValue = 0;
-    double eValue = 0;
+
+    double sumEValue = 0;
 
     double rmMean = mean(rm_v);
     double medvMean = mean(medv_v);
@@ -74,9 +96,9 @@ double covar(vector<double> rm_v, vector<double> medv_v){
     int n = rm_v.size();
 
     for (int i = 0; i < n; i++){
-        eValue = eValue + ((rm_v.at(i) - rmMean) * (medv_v.at(i) - medvMean));
+        sumEValue = sumEValue + ((rm_v.at(i) - rmMean) * (medv_v.at(i) - medvMean));
     }
-    covar = eValue / (n-1);
+    covar = sumEValue / (n-1);
     return covar;
 }  
 
@@ -86,11 +108,11 @@ double cor(vector<double> rm_v, vector<double> medv_v){
 
     double covarValue = covar(rm_v, medv_v);
     
-    double eValue_rm = 0;
-    double eValue_medv = 0;
+    double sumSquareDiff_rm = 0;    // Sum of all square different in vector rm
+    double sumSquareDiff_medv = 0;  // Sum of all square different in vector medv
 
-    double standDev_rm = 0;
-    double standDev_medv = 0;
+    double sigma_rm = 0;  // Standard deviation of vector rm (Sigma of vector rm)
+    double sigma_medv = 0; // Standard deviation of vector medv (Sigma of vector medv)
 
 
     double rmMean = mean(rm_v);
@@ -99,19 +121,18 @@ double cor(vector<double> rm_v, vector<double> medv_v){
     int n = rm_v.size();
 
     for (int i = 0; i < n; i++){
-        eValue_rm = eValue_rm + pow((rm_v.at(i) - rmMean),2);
-        eValue_medv = eValue_medv + pow((medv_v.at(i) - medvMean),2);
+        sumSquareDiff_rm = sumSquareDiff_rm + pow((rm_v.at(i) - rmMean),2);
+        sumSquareDiff_medv = sumSquareDiff_medv + pow((medv_v.at(i) - medvMean),2);
     }
     
-    standDev_rm = sqrt(eValue_rm / n);
-    standDev_medv =sqrt(eValue_medv / n);
+    sigma_rm = sqrt(sumSquareDiff_rm / n);
+    sigma_medv =sqrt(sumSquareDiff_medv / n);
 
-    cor = covarValue / (standDev_rm * standDev_medv);
+    cor = covarValue / (sigma_rm * sigma_medv);
     return cor;
 }  
 
-
-
+// main function
 int main(int argc, char** argv) 
 {
     ifstream        inFS;  // Input file stream
@@ -154,25 +175,12 @@ int main(int argc, char** argv)
     rm.resize(numObservations);
     medv.resize(numObservations);
 
-//debug
-cout << "1st " << rm.front() << endl;
-cout << "last " << rm.back() << endl;
-cout << "last " << rm.at((rm.size()-1)) << endl;
-
-
     cout << "New length " << rm.size() << endl;
     
     cout << "Closing file Boston.csv" << endl;
     inFS.close();    // Done with file, close it
 
     cout << "Number of records: " << numObservations << endl;
-
-//debug
-    // cout << "Number of records: " << rm.at(0) << endl;
-    // cout << "Number of records: " << medv.at(0) << endl;
-//
-
-
 
     cout << "\nStats for rm" << endl;
     print_stats(rm);
