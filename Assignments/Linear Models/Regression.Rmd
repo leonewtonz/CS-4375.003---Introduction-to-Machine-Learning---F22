@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # Linear Models
 
 #### CS 4375 - Intro to Machine Learning
@@ -7,26 +12,28 @@
 
 
 ## Linear Regression Models
-- General term
-- Strong and weakness
+
+- The linear regression model work by finding the relationship between the target value-y and the predictor value-x. This linear relationship can be defined by parameter w and b; which w is the slope line-quantifying the amount that y changes with changes in x; and b is an intercept. The linear regression is powerful because it simple however,it only work with attributes that can be quantifiable.
 
 
 ## Physicochemical Properties of Protein Tertiary Structure Data Set
 **Citation:** 
+
 ABV - Indian Institute of Information Technology & Management, Gwalior, MP, India.
 UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
 **Attribute Information*:**
-RMSD-Size of the residue.
-F1 - Total surface area.
-F2 - Non polar exposed area.
-F3 - Fractional area of exposed non polar residue.
-F4 - Fractional area of exposed non polar part of residue.
-F5 - Molecular mass weighted exposed area.
-F6 - Average deviation from standard exposed area of residue.
-F7 - Euclidian distance.
-F8 - Secondary structure penalty.
-F9 - Spacial Distribution constraints (N,K Value).
+
+  - RMSD-Size of the residue.
+  - F1 - Total surface area.
+  - F2 - Non polar exposed area.
+  - F3 - Fractional area of exposed non polar residue.
+  - F4 - Fractional area of exposed non polar part of residue.
+  - F5 - Molecular mass weighted exposed area.
+  - F6 - Average deviation from standard exposed area of residue.
+  - F7 - Euclidean distance.
+  - F8 - Secondary structure penalty.
+  - F9 - Spacial Distribution constraints (N,K Value).
 
 ### Load the data
 ```{r}
@@ -43,24 +50,166 @@ test <- df[-i,]
 ```
 
 ### Data Exploration
+
 1. Look at the first 10 rows in training data
+
 ```{r}
 head(train, n=10)
 ```
+
 2. View the summary of entire training data set
+
 ```{r}
 summary(train)
 ```
+
 3. Count number of NA value by column
+
 ```{r}
 colSums(is.na(train)) 
 ```
+
 4. Check the correlation of all column in training data
-- Based on the number we can see that F1 is highly correlation with F2, F4, F5, F6, F9
+
+  - Based on the number we can see that F1 is highly correlation with F2, F4, F5, F6, F9
 ```{r}
 cor(train)
 ```
-5. Quick visualization on correlation 
-- These plot confirm the highly correlation of F1 and other attributes mentioned  above
 
+5. Quick visualization on correlation 
+
+  - These plots confirm the highly correlation of F1 and other attributes mentioned  above
+```{r}
+pairs(train)
+```
+
+
+
+6. Summary() for F1 and F5 in training data
+
+**Summary for F1 - Total surface area.**
+```{r}
+summary(train$F1)
+```
+
+**Summary for F5 - Molecular mass weighted exposed area.**
+```{r}
+summary(train$F5)
+```
+
+
+### Data Visualization using informative graph
+
+1. Plot show the relationship between F1 - Total surface area and F5 - Molecular mass weighted exposed area.
+```{r}
+plot(train$F5,train$F1 ,xlab = "F5 - Molecular mass weighted exposed area.", ylab = "F1 - Total surface area." )
+```
+```{r}
+hist(train$F1, xlab = "F1 - Total surface area", main = "Total surface are of Protein Tertiary Structure")
+```
+
+### Simple Linear Regression Model (One Predictor)
+
+```{r}
+lm1 <- lm(F1~F5, data = train)
+summary(lm1)
+```
+**Model Summary Explanation**
+
+  - The model was build to predict the target column F1 - Total surface area using the predictor F5 - Molecular mass weighted exposed area using the training data which contain 80% observations from original data set
+The Estimate column in Coefficients section provide us 2 important values w=4.472e+1, b=7.181e-03. It mean for each unit F5 increase, we expect 7.181e-03 unit of F1 more. The 3 asterisks in train$F5 indicate that F5 is a good predictor.The p value is also very small which mean we can reject the null hypothesis --> good model. 
+  - The RSE = 243.6 is also small compare the the value of F1 which has the mean = 9783 (See detail on F1 summary above) and this RSE value was calculated from a large number of sample 36582 which make it more reliable. All this let us know that the model is a good fit. The R-square = 0.9964 which is very close to 1 mean almost all the variation in F1 can be predicted by F5. 
+  - Finally, the F-statistic = 1.011e07 > 1 and low p-value also confirm the confidence in the model
+
+### Plotting the residuals
+
+**Plotting**
+```{r}
+par(mfrow=c(2,2))
+plot(lm1)
+```
+**Residual Plots Explanation**
+1. Plot 1: Residuals vs Fitted
+-   The plot show that we have a fairly horizontal line without distinct patterns which is good indicator that we don't have non-linear relationships. Notice that, we don't have a lot of residual on the far right which mean we don't have much data when the value of F1 and F5 become bigger which was confirm in the graph above.
+
+2. Plot 2: Normal Q-Q
+
+  - This plot show us if the residuals are normally distributed. We expect a fairly straight
+diagonal line following the dashed line. We can see that from 1 to 3 quarter, the line acting exactly what we want: the residuals are lined up well and close the dash line. However, moving forward the Q4, the residuals start to deviate from the dash-line as we don't have much data in that region.
+
+3. Plot 3: Scale-Location
+
+  - This plot show if residuals are spread equally along the ranges of predictors. Based on the result, we have a fairly horizontal line and most of residuals equally spread around the line which indicate a good equal variance on the data. As from previous as, we don't have much residuals on the far right as lack of data
+
+4. Plot 4: Residuals vs Leverage
+
+  - This plot will indicate leverage points which are influencing the regression line. We can see we also have fairly horizontal line which indicate the result would not be much different if we include or exclude the extreme values from analysis.
+
+### Multiple Linear Regression Model (Multiple Predictors)
+
+**Create a model using F2 - Non polar exposed area and F5 - Molecular mass weighted exposed area as predictors**
+```{r}
+lm2 <- lm(F1~F2+F5, data=train)
+summary(lm2)
+```
+**Plotting the residuals for lm2**
+```{r}
+par(mfrow=c(2,2))
+plot(lm2)
+```
+### Build 3rd Linear Regression Model using all other column as predictors
+
+**Build and output the summary**
+```{r}
+lm3 <- lm(F1~., data=train)
+summary(lm3)
+```
+
+**Plotting residuals for lm3**
+```{r}
+par(mfrow=c(2,2))
+plot(lm3)
+```
+### Comparing the summary result of 3 models
+
+  - Among 3 models, the lm3 provide the best result. It is because lm3 have the biggest R-square value (0.9977) compare to other model. It also has the lowest RSE (196.3) compare to other model. The lm3 achieve all that while maintain other indicator such p-value low and relative close to other model.
+
+### Comparing 3 models using correlation metric and mse
+
+**1. Calculate correlation and mse for lm1**
+```{r}
+pred1 <- predict(lm1, newdata=test)
+cor1 <- cor(pred1, test$F1)
+mse1 <- mean((pred1-test$F1)^2) 
+rmse1 <- sqrt(mse1)
+print(paste('correlation:', cor1))
+print(paste('mse:', mse1))
+print(paste('rmse:', rmse1))
+```
+
+
+**2. Calculate correlation and mse for lm2**
+```{r}
+pred2 <- predict(lm2, newdata=test)
+cor2 <- cor(pred2, test$F1)
+mse2 <- mean((pred2-test$F1)^2) 
+rmse2 <- sqrt(mse2)
+print(paste('correlation:', cor2))
+print(paste('mse:', mse2))
+print(paste('rmse:', rmse2))
+```
+
+**3. Calculate correlation and mse for lm3**
+```{r}
+pred3 <- predict(lm3, newdata=test)
+cor3 <- cor(pred3, test$F1)
+mse3 <- mean((pred3-test$F1)^2) 
+rmse3 <- sqrt(mse3)
+print(paste('correlation:', cor3))
+print(paste('mse:', mse3))
+print(paste('rmse:', rmse3))
+```
+**Conclusion**
+
+  - Based on the results above, the best model can be ranked as lm3 > lm2 > lm1. The ranking was very inline with the order of correlation and mse values. Even before, we calculated these values, we could guess who is the winner based on the summary output. These calculation can be served as a confirmation of the result.
 
