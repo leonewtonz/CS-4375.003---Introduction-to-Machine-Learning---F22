@@ -62,7 +62,5 @@ cor(train)
 ```
 5. Quick visualization on correlation 
 - These plot confirm the highly correlation of F1 and other attributes mentioned  above
-```{r}
-pairs(train)
-```
+
 
