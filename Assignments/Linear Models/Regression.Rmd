@@ -1,0 +1,68 @@
+# Linear Models
+
+#### CS 4375 - Intro to Machine Learning
+#### Dr. Karen Mazidi
+#### Author: Leo Nguyen -ldn190002
+#### Date: Sep 25, 2022
+
+
+## Linear Regression Models
+- General term
+- Strong and weakness
+
+
+## Physicochemical Properties of Protein Tertiary Structure Data Set
+**Citation:** 
+ABV - Indian Institute of Information Technology & Management, Gwalior, MP, India.
+UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+
+**Attribute Information*:**
+RMSD-Size of the residue.
+F1 - Total surface area.
+F2 - Non polar exposed area.
+F3 - Fractional area of exposed non polar residue.
+F4 - Fractional area of exposed non polar part of residue.
+F5 - Molecular mass weighted exposed area.
+F6 - Average deviation from standard exposed area of residue.
+F7 - Euclidian distance.
+F8 - Secondary structure penalty.
+F9 - Spacial Distribution constraints (N,K Value).
+
+### Load the data
+```{r}
+df <- read.csv("data/CASP.csv", header=TRUE)
+str(df)
+```
+### Divide into 80/20 train/test
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(df), 0.8*nrow(df), replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+### Data Exploration
+1. Look at the first 10 rows in training data
+```{r}
+head(train, n=10)
+```
+2. View the summary of entire training data set
+```{r}
+summary(train)
+```
+3. Count number of NA value by column
+```{r}
+colSums(is.na(train)) 
+```
+4. Check the correlation of all column in training data
+- Based on the number we can see that F1 is highly correlation with F2, F4, F5, F6, F9
+```{r}
+cor(train)
+```
+5. Quick visualization on correlation 
+- These plot confirm the highly correlation of F1 and other attributes mentioned  above
+```{r}
+pairs(train)
+```
+
