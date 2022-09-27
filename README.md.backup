@@ -31,4 +31,6 @@ Ability to understand and apply the following concepts in machine learning:
 	+	Logistic Regression. For documentation click
 
 -	Exploring different classification metrics
-	+	confusionM
+	+	confusionMatrix
+	+	ROCR Curve
+	+	Naive Bayes
