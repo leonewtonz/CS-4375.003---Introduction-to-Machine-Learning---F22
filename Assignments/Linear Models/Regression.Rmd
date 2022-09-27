@@ -13,16 +13,20 @@ output:
 
 ## Linear Regression Models
 
-- The linear regression model work by finding the relationship between the target value-y and the predictor value-x. This linear relationship can be defined by parameter w and b; which w is the slope line-quantifying the amount that y changes with changes in x; and b is an intercept. The linear regression is powerful because it simple however,it only work with attributes that can be quantifiable.
+- The linear regression model work by finding the relationship between the target value-y and the predictor value-x. This linear relationship can be defined by parameter w and b; which w is the slope line-quantifying the amount that y changes with changes in x; and b is an intercept.
 
+- Strengths of linear regression: It is a relative simple algorithm, it work well when data have linear pattern, and it has low variance
+
+- Weaknesses of linear regression: It is high bias because it assumes a linear shape of data
 
 ## Physicochemical Properties of Protein Tertiary Structure Data Set
+
 **Citation:** 
 
 ABV - Indian Institute of Information Technology & Management, Gwalior, MP, India.
 UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
-**Attribute Information*:**
+**Attribute Information:**
 
   - RMSD-Size of the residue.
   - F1 - Total surface area.

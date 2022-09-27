@@ -1,0 +1,271 @@
+# Linear Models
+
+#### CS 4375 - Intro to Machine Learning
+#### Dr. Karen Mazidi
+#### Author: Leo Nguyen -ldn190002
+#### Date: Sep 25, 2022
+
+
+## Linear Model for Classification (Logistic Regression)
+
+    - The linear model for classification let us know what class the the target variable belong too. In most cases, it is a binary output which mean the target either belong to one or other class. However, the model is also allow classification on more than 2 classes
+
+    - Strengths of logistic regression: its computation is inexpensive, it can separates classes well if they are linearly separable, it has a nice probabilistic output
+
+    - Weaknesses of logistic regression: it is not flexible enough to capture complex non-linear decision boundaries, it prone to under-fitting
+
+## Room Occupancy Estimation Data Set
+
+**Citation:** 
+
+    Adarsh Pal Singh, Vivek Jain, Sachin Chaudhari, Frank Alexander Kraemer, Stefan Werner and Vishal Garg, â€œMachine Learning-Based Occupancy Estimation Using Multivariate Sensor Nodes,â€ in 2018 IEEE Globecom Workshops (GC Wkshps), 2018.
+
+**Attribute Information:**
+
+    - Date: YYYY/MM/DD
+    - Time: HH:MM:SS
+    - Temperature: In degree Celsius
+    - Light: In Lux
+    - Sound: In Volts (amplifier output read by ADC)
+    - CO2: In PPM
+    - CO2 Slope: Slope of CO2 values taken in a sliding window
+    - PIR: Binary value conveying motion detection
+    - Room_Occupancy_Count: Ground Truth
+
+
+
+### Load the data
+```{r}
+df <- read.csv("data/Occupancy_Estimation.csv", header=TRUE)
+str(df)
+```
+
+### Data Cleaning
+
+    - We will remove date and time in data set. Then make PIR (in both sensor S6 and S7) and Room_Occupancy_Count as factors.
+
+```{r}
+df <- df[,c(3:19)]
+df$S6_PIR <- factor(df$S6_PIR)
+df$S7_PIR <- factor(df$S7_PIR)
+df$Room_Occupancy_Count <- factor(df$Room_Occupancy_Count)
+dim(df)
+```
+
+### Divide into 80/20 train/test
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(df), 0.8*nrow(df), replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+
+### Data Exploration
+
+1. Look at the first 10 rows in training data
+
+```{r}
+head(train, n=10)
+```
+
+
+2. View the summary of entire training data set
+
+```{r}
+summary(train)
+```
+
+
+3. Count number of NA value by column
+
+```{r}
+colSums(is.na(train)) 
+```
+
+4. Check the correlation of all non-factored column in training data
+
+
+```{r}
+cor(train[1:14])
+```
+
+5. Quick visualization on correlation 
+```{r}
+pairs(train[1:14])
+```
+
+6. Check the level, encoding matrix of  "Room_Occupancy_Count" in training data
+
+**Check Level**
+```{r}
+levels(train$Room_Occupancy_Count)
+```
+
+**Check Encoding Matrix**
+```{r}
+contrasts(train$Room_Occupancy_Count)
+```
+### Data Visualization using informative graph
+
+1. Using barplots to visualize the 4 factor level of "Room_Occupancy_Count"
+
+```{r}
+counts <- table(train$Room_Occupancy_Count)
+barplot(counts, xlab="Room_Occupancy_Count", ylab="Frequency", col=c("seagreen","wheat","sienna3", "purple"))
+
+```
+
+2. Visualize the relationship between "Room_Occupancy_Count" and Temp, Light, Sound, CO2
+
+    - We can see clearly that the number of people in the room increase when the Temp and CO2 level increase. Not so much with Light and Sound
+
+```{r}
+par(mfrow=c(2,2))
+plot(train$Room_Occupancy_Count, train$S1_Temp, data = train, main = "S1_Temp")
+plot(train$Room_Occupancy_Count, train$S1_Light, data = train, main = "S1_Light")
+plot(train$Room_Occupancy_Count, train$S1_Sound, data = train, main = "S1_Sound")
+plot(train$Room_Occupancy_Count, train$S5_CO2, data = train, main = "S5_CO2")
+
+```
+
+3. The relationship between the CO2 Level and Room Temp
+
+  - More people inside the room, the more CO2, and higher Temp
+
+```{r}
+plot(train$S5_CO2~train$S1_Temp)
+```
+
+### Build Logistic Regression Model
+
+    - We remove Sound(S1-S4) and Light(S1,S2) because the model will issue the "Warning: glm.fit: algorithm did not converge. Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred" which mean the data was separated perfectly --> This is not very good, in fact, it make all the predictors become unreliable (not 3 asterisks on any of predictors if we keep those). Those Sound(S1-S4) and Light(S1,S2) create a perfect separation between zero occupants and at least 1 occupant.
+
+    - In case of Sound(S1-S4): it makes sense because, it is obvious that if there no one in the room, properly, there is no sound or low sound level. But when there is people in the room, there will be sound. The problem is we can not distinguish on how many people are there.
+    - In case of Light(S1, S2): it could be because the location of the sensor is not optimal. Their positions are always cover when someone in the room. So it can only distingush between room empty and not empty. And can not account for how many people are there.
+
+**We can visual the problem with plot below**
+```{r}
+par(mfrow=c(2,2))
+plot(train$Room_Occupancy_Count, train$S1_Light, xlab="Room_Occupant_Count", varwidth=TRUE, data = train)
+plot(train$Room_Occupancy_Count~train$S1_Light, data = train)
+
+plot(train$Room_Occupancy_Count, train$S1_Sound, xlab="Room_Occupant_Count", varwidth=TRUE, data = train)
+plot(train$Room_Occupancy_Count~train$S1_Sound, data = train)
+```
+
+
+    - So we remove those column in the model. It results in a better model, all the predictors now have 3 asterisks.
+
+```{r}
+glm1 <- glm(Room_Occupancy_Count~.-S1_Sound-S2_Sound-S3_Sound-S4_Sound-S1_Light-S2_Light, data = train, family="binomial")
+summary(glm1)
+```
+
+**Logistic Regression Model Summary Explanation**
+
+     - The model was build to predict the target column "Room_Occupation_Count with all other column excepts the Light (S1, S2) and Sound(S1-S4) using the training data which contain 80% observations from original data set.
+  
+    - All the predictors in the Coefficients section has 3 asterisks which indicate they are good predictors. All the p-value is relative small too --> good indicators
+  
+    - The Null deviance mean the lack of fit of the model considering only the intercept. The Residual deviance mean the lack of fit of the entire model. As we can see that the Residual deviance is much lower than the Null deviance indicates that this is a good model. We also have a very high AIC number which consider as good indicator. The AIC is very useful when comparing between the model
+  
+  
+### Naive Bayes
+
+**Import the necessary package e1071**
+```{r}
+library(e1071)
+```
+
+**Build the Naive Bayes Model**
+```{r}
+nb1 <- naiveBayes(Room_Occupancy_Count~., data = train)
+nb1
+```
+
+**Naive Bayes Model Output Explanation**
+
+- We can see the probabilities for each class 0,1,2,3 in Room_Occupant_Count are 81%, 5%, 7%, 7%. It mean the model can easily detect if the room is empty or not but not good at distinguish on how many people in the room
+
+- For the 2 factored predictors: S6_PIR and S7_PIR, the probabilities values confirm the statement above, we have a very high value above 90% to detect of the room is empty or have at least 1 person. But the value reduce significantly when we want to verify how many people inside the room.
+
+- For other predictors, because they are numeric, so they does not provide much information.
+
+
+### Predict and evaluate test data
+
+
+**Predict and evaluate test data using logistic regression**
+
+```{r}
+probs <- predict(glm1, newdata=test, type="response")
+pred <- ifelse(probs>0.5, 1, 0)
+acc <- mean(pred==test$Room_Occupancy_Count)
+print(paste("accuracy = ", acc))
+table(pred, test$Room_Occupancy_Count)
+```
+
+**Predict and evaluate test data using confusionMatrix()**
+
+        - The warning show up because, we count the number of each level of Room_Occupancy_Count by proparbilities with 50% threshold. And this column factor has 4 levels
+        
+```{r}
+library(caret)
+confusionMatrix(as.factor(pred), reference=test$Room_Occupancy_Count)
+```
+**Evaluate using ROC**
+
+    - Not Applicable, as ROCR only support binary classification. The "Room_Occupancy_Count" has 4 classes
+
+**Predict and evaluate test data using Naive Bayes**
+
+```{r}
+p1 <- predict(nb1, newdata=test, type="class")
+
+acc <- mean(p1==test$Room_Occupancy_Count)
+print(paste("accuracy = ", acc))
+
+table(p1, test$Room_Occupancy_Count)
+```
+
+**Compare result between logistic model glm1 and Naive Bayes nb1**
+
+- As we can see the Naive Bayes-nb1 have higher accuracy compare to logistic regression-glm1, and confusionMatrix (95% > 83% , 83%). This result happen because we know that Naive Bayes perform better in high dimensions (More than 2 classification classes) and our target was separated into 4 different classes.
+
+### Strengths and Weakness of Naive Bayes and Logistic Regression
+
+**Strengths and weakness of Naive Bayes**
+
+- Strengths: It work will with small data sets, it is easy to implement and interpret, it can manage high dimensions well
+
+- Weakness: It may be outperformed by other classifiers for larger data sets
+
+
+**Strengths and weakness of Logistic Regression**
+
+- Strengths: its computation is inexpensive, it can separates classes well if they are linearly separable, it has a nice probabilistic output
+
+- Weaknesses: it is not flexible enough to capture complex non-linear decision boundaries, it prone to under-fitting
+
+
+### Benefits and drawback of each classification metric
+
+**For Logistic Regression**
+
+    - The benefits is that it is quick and have a nice probabilistic output. However, as we can see in the result, because, the target is 4 levels so that did not perform very well
+    .
+**For confusionMatrix**
+
+    - The benefits is that it provide extra infomation on the output - Kappa value. In this example, we have Kappa = 0.5026 which is moderate agreement on quantifying between the predictors and the actual value. However, the drawback is it provide the accuracy is almost the same as Logistic Regression
+    
+**For ROCR**
+
+    - Not Applicable, as it only support on binary classifications
+
+**For Naive Bayes**
+
+    - The benefit is that it provide the highest accuracy among classification metrics because it perform well in high dimension class. It is also easy to interpret. However, the drawback is it does not perform well in large data set
+
+
