@@ -15,62 +15,84 @@
 #include <fstream>
 #include <algorithm>
 #include <cmath>
-#include <regex>
-#include <iterator>
+
 
 using namespace std;
-
-// regex delimiter{ "," };
-// constexpr size_t targetColumn;
-// const int   survivedColumn = 3;
-// const int   sexColumn = 4;
-
-// struct columnExtract(targetColumn) { 
-
-//     // Overload extractor. Read a complete line
-//     friend std::istream& operator>>(std::istream& is, String11& s11) { 
-
-//         // Read a complete line
-//         if (std::string line{}; std::getline(is, line)) {
-
-//             // Split it into tokens
-//             std::vector token(std::sregex_token_iterator(line.begin(), line.end(), delimiter, -1), {});
-//             // We only need one column
-//             if (targetColumn < token.size()) {
-//                 // Get column 11
-//                 s11.result = token[targetColumn];
-//             }
-//         }
-//         return is; 
-//     }
-
-//     // Cast the type 'String11' to double
-//     operator double() const { return std::stod(result); }
-
-//     // Temporary to hold the resulting string
-//     std::string result{};
-// };
-
+// using matrix = vector<vector<int>>;
 
 // Sigmoid
-double sigmoid(double z) {
-    return 1.0 / (1.0 + exp(-z));
+vector<double> sigmoid(vector<double> z) {
+    vector<double> resultSig(z.size());
+    for (int i=0; i<z.size(); i++){
+        resultSig.at(i) = 1.0 / (1.0 + exp(-z.at(i)));
+    }
+    return resultSig;
 }
 
+// Matrix multiplication
+vector<double> multiply(vector<vector<double>> m1, vector<double> m2)
+{
+    vector<double> resultMul(m1.size());
+    // for(int row = 0; row < m1.size(); row++) {
+    //     for(int col = 0; col < m1.at(0).size(); col++) {
+    //         for(int i = 0; i < m2.size(); i++) {
+    //             resultMul.at(row) += m1.at(row).at(i) * m2.at(col);
+    //         }
+    //     }
+    // }
 
+    for(int row = 0; row < m1.size(); row++) {
+        for(int col = 0; col < m1.at(0).size(); col++) {
+                resultMul.at(row) += m1.at(row).at(col) * m2.at(col) ;
+            }
+    }
+
+    return resultMul;
+}
+
+// Matrix subtraction
+vector<double> subtract(vector<double> m1, vector<double> m2)
+{
+    vector<double> resultSub(m1.size()); 
+    for(int i = 0; i < resultSub.size(); i++) {
+                resultSub.at(i) = m1.at(i) - m2.at(i);
+    }
+    return resultSub;
+}
+
+// Matrix addition
+vector<double> addition(vector<double> m1, vector<double> m2)
+{
+    vector<double> resultAdd(m1.size()); 
+    for(int i = 0; i < resultAdd.size(); i++) {
+                resultAdd.at(i) = m1.at(i) + m2.at(i);
+    }
+    return resultAdd;
+}
+
+// Matrix transpose
+vector<vector<double>> transpose(vector<vector<double>> m)
+{
+    vector<vector<double>> resultTrans(m.at(0).size(), vector<double>(m.size()));
+    for (int i = 0; i < m.size(); i++) {
+        for (int j = 0; j < m.at(0).size(); j++) {
+            resultTrans.at(j).at(i) = m.at(i).at(j);
+        }
+    }
+    return resultTrans;
+}
 
 // main function
 int main(int argc, char** argv) 
 {
-    ifstream        inFS;  // Input file stream
-    string          line;
+    ifstream            inFS;  // Input file stream
+    string              line;
     
-    const int       numTrain = 3;
-    string          survived_in, sex_in, dummy;
-    vector<int>     sex(numTrain);
-    vector<int>     survived(numTrain);
-
- 
+    const int           numTrain = 800;
+    const int           MAX_ITER = 100;
+    string              survived_in, sex_in, dummy;
+    vector<double>      sex(numTrain);
+    vector<double>      survived(numTrain);
 
     // Try to open file
     cout << "Open file titanic_project.csv" << endl;
@@ -86,18 +108,15 @@ int main(int argc, char** argv)
     cout << "Heading: " << line << endl;
 
     int index = 0;
-    while (index < 3) {
+    while (index < numTrain) {
         
         getline(inFS, dummy, ','); // Remove 1st column
         getline(inFS, dummy, ','); // Remove 2nd column_pclass
         getline(inFS, survived_in, ',');
         getline(inFS, sex_in, ',');
-
-        // cout << "Survived: " << survived_in << endl; // debug
-        // cout << "Sex: " << sex_in << endl; // debug
         
-        survived.at(index) = stoi(survived_in);
-        sex.at(index) = stoi(sex_in);
+        survived.at(index) = stod(survived_in);
+        sex.at(index) = stod(sex_in);
 
         index++;
     }
@@ -105,62 +124,40 @@ int main(int argc, char** argv)
     survived.resize(numTrain);
     sex.resize(numTrain);
 
-
     // Set up weight vector, label vector, and data matrix
-    vector<int> weight(numTrain, 1);
-    vector<int> labels(survived);
-    // vector<vector<int>> vect;
+    vector<double> weights(2, 1);  // Two rows with initial value = 1 (w0 = w1 = 1)
+    vector<double> labels(survived);
 
-   
-
-
-
-
-
-    
-// How to work on vector    
-    // vector<vector<int>> vect;
-    // {
-    //     {1, 2, 3},
-    //     {4, 5, 6},
-    //     {7, 8, 9}
-    // };
-
-    vector<vector<int>> vect(numTrain, vector<int>(2,1));
-
+    vector<vector<double>> dataMatrix(numTrain, vector<double>(2,1)); 
     int col = 1;
-    cout << "2d vectors_single element: " << vect[1][1] << endl;
-    // cout << "2d vectors_single column: " << vect[][1] << endl;
-
-   
-    // for (int i = 0; i < vect.size(); i++) 
-    // {
-    //     for (int j = 0; j < vect[i].size(); j++)
-    //     {
-    //         cout << vect[i][j] << " ";
-    //     }    
-    //     cout << endl;
-    // }
-
-    // for (int i = 0; i < vect.size(); i++) 
-    // {   
-    //     cout << vect[i][col] << " ";  
-    //     cout << endl;
-    // }
-
-    vector<int> a = {3,4,5};
-    for (int i = 0; i < vect.size(); i++) 
-    {   
-        vect[i][col] = a[i];
+    for (int i = 0; i < dataMatrix.size(); i++){   
+        dataMatrix[i][col] = sex[i];  // Fill 2nd column with vector sex
     }
 
-    for (int i = 0; i < vect.size(); i++) 
-    {   
-        cout << vect[i][col] << " ";  
-        cout << endl;
+    // Gradient Descent
+    double             learningRate = 0.001;
+    vector<double>     probVector(numTrain);
+    vector<double>     error(numTrain);
+
+ 
+    for (int iter = 0; iter < MAX_ITER; iter++){   
+        probVector = sigmoid(multiply(dataMatrix, weights));
+        error      = subtract(labels, probVector);
+
+        vector<double> temp= multiply(transpose(dataMatrix), error);
+        
+        for (int i=0; i<temp.size(); i++){
+            temp.at(i) = temp.at(i) * learningRate;
+        }
+
+        weights = addition(weights, temp);
     }
 
-    
+    cout << "\nweights: ";
+    for(auto e : weights){
+         cout << e << " ";
+        }       
+// debug
     return 0;
 }
 

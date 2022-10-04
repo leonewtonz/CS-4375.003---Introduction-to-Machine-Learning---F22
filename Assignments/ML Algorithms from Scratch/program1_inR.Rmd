@@ -1,0 +1,20 @@
+### Load the data
+```{r}
+df <- read.csv("titanic_project.csv", header=TRUE)
+str(df)
+```
+### Divide into 80/20 train/test
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(df), 0.8*nrow(df), replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+### Logistic Regression
+```{r}
+glm1 <- glm(survived~sex, data = train, family="binomial")
+summary(glm1)
+```
+
