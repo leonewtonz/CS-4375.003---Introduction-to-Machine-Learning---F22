@@ -8,19 +8,16 @@
     Program1: Logistic Regression
 */ 
 
-
-
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cmath>
-
+#include <chrono>
 
 using namespace std;
-// using matrix = vector<vector<int>>;
 
-// Sigmoid
+// Sigmoid function
 vector<double> sigmoid(vector<double> z) {
     vector<double> resultSig(z.size());
     for (int i=0; i<z.size(); i++){
@@ -73,6 +70,70 @@ vector<vector<double>> transpose(vector<vector<double>> m)
     return resultTrans;
 }
 
+// Evaluate function: calculate accuracy, sensitivity, specificity
+void evaluate(vector<double> preds, vector<double> test){
+    double  accuracy, sensitivity, specificity;
+    double  sum = 0;
+    int     size = test.size();
+
+    cout << "\n\nNumber of test samples: " << test.size();
+    // Calculate the total correct predict
+    for (int i=0; i<size; i++){
+        if (preds.at(i) == test.at(i)){
+            sum++;
+        }
+    }
+
+    // Calculate the confusion matrix
+    // 0 mean not survived
+    // 1 mean survived
+    double actualNotSurvived = 0;
+    double predictTotalNotSurvived = 0;
+
+    double tp = 0; 
+    double fp, fn, tn;
+
+    for (int i = 0; i<size; i++){
+        if (test.at(i) == 0){
+            actualNotSurvived ++;
+        }
+    }
+    cout << "\nactualNotSurvived: " << actualNotSurvived;
+
+    for (int i = 0; i<size; i++){
+        if (preds.at(i) == 0){
+            predictTotalNotSurvived ++;
+        }
+    }
+    cout << "\npredictTotalNotSurvived: " << predictTotalNotSurvived;
+
+    for (int i = 0; i<size; i++){
+        if(preds.at(i) == 0 && preds.at(i) == test.at(i)){
+            tp ++;
+        }
+    }
+    cout << "\nTP: " << tp;
+
+    fn = actualNotSurvived - tp;
+    cout << "\nFN: " << fn;
+
+    fp = predictTotalNotSurvived - tp;
+    cout << "\nFP: " << fp;
+
+    tn = size - (tp + fp + fn);
+    cout << "\nTN: " << tn;
+
+    // Calculate the accuracy, sensitivity, specificity
+    accuracy = sum / size;
+    sensitivity = tp / (tp + fn);
+    specificity = tn / (tn + fp);
+
+    // Print out the accuracy, sensitivity, specificity
+    cout << "\n\nAccuracy: " << accuracy;
+    cout << "\nSensitivity: " << sensitivity;
+    cout << "\nSpecificity: " << specificity;
+}
+
 // main function
 int main(int argc, char** argv) 
 {
@@ -81,9 +142,10 @@ int main(int argc, char** argv)
     
     const int           numTrain = 800;
     const int           MAX_ITER = 100;
+    const int           MAX_LEN = 1050;
     string              survived_in, sex_in, dummy;
-    vector<double>      sex(numTrain);
-    vector<double>      survived(numTrain);
+    vector<double>      sex(MAX_LEN);
+    vector<double>      survived(MAX_LEN);
 
     // Try to open file
     cout << "Open file titanic_project.csv" << endl;
@@ -98,8 +160,9 @@ int main(int argc, char** argv)
     getline(inFS, line);
     cout << "Heading: " << line << endl;
 
+    // Copy the survived column and sex column
     int index = 0;
-    while (index < numTrain) {
+    while (inFS.good()) {
         
         getline(inFS, dummy, ','); // Remove 1st column
         getline(inFS, dummy, ','); // Remove 2nd column_pclass
@@ -112,17 +175,44 @@ int main(int argc, char** argv)
         index++;
     }
 
-    survived.resize(numTrain);
-    sex.resize(numTrain);
+    survived.resize(index);
+    sex.resize(index);
+
+    cout << "Closing file titanic_project.csv" << endl;
+    inFS.close();    // Done with file, close it
+
+    // Devide into train and test set
+    // Train data
+    vector<double>      trainSurvived(numTrain);
+    vector<double>      trainSex(numTrain);
+    for (int i=0; i<numTrain; i++){
+        trainSurvived.at(i) = survived.at(i);
+        trainSex.at(i) = sex.at(i);
+    }   
+
+    int numTest = survived.size() - numTrain;
+    int k = 0;
+    // Test data
+    vector<double>      testSurvived(numTest);
+    vector<double>      testSex(numTest);
+    for (int i=numTrain; i<sex.size(); i++){
+        testSurvived.at(k) = survived.at(i);
+        testSex.at(k) = sex.at(i);
+        k++;
+    }
+    vector<vector<double>> testMatrix(numTest, vector<double>(2,1)); 
+    int col = 1;
+    for (int i = 0; i < testMatrix.size(); i++){   
+        testMatrix[i][col] = testSex[i];  // Fill 2nd column with testSex
+    }
 
     // Set up weight vector, label vector, and data matrix
     vector<double> weights(2, 1);  // Two rows with initial value = 1 (w0 = w1 = 1)
-    vector<double> labels(survived);
+    vector<double> labels(trainSurvived);
 
     vector<vector<double>> dataMatrix(numTrain, vector<double>(2,1)); 
-    int col = 1;
     for (int i = 0; i < dataMatrix.size(); i++){   
-        dataMatrix[i][col] = sex[i];  // Fill 2nd column with vector sex
+        dataMatrix[i][col] = trainSex[i];  // Fill 2nd column with trainSex
     }
 
     // Gradient Descent
@@ -130,7 +220,6 @@ int main(int argc, char** argv)
     vector<double>     probVector(numTrain);
     vector<double>     error(numTrain);
 
- 
     for (int iter = 0; iter < MAX_ITER; iter++){   
         probVector = sigmoid(multiply(dataMatrix, weights));
         error      = subtract(labels, probVector);
@@ -144,11 +233,31 @@ int main(int argc, char** argv)
         weights = addition(weights, temp);
     }
 
-    cout << "\nCofficients:\t\tw0" << "\t\t\t\t\tw1" << endl;
-    for(int i=0; i<weights.size(); i++){
-        cout << "\t\t\t" << weights.at(i);
-    }     
-// debug
+    // Printout Cofficients
+    double w0 = weights.at(0);
+    double w1 = weights.at(1);
+    cout << "\nCofficients:";
+    cout << "\nw0: " << w0;
+    cout << "\nw1: " << w1;
+
+    // Calculate predict vector
+    vector<double>     predicted(numTest);
+    vector<double>     probabilities(numTest);
+    vector<double>     predictions(numTest);
+
+    predicted       = multiply(testMatrix,weights);
+    for (int i = 0; i<numTest; i++){
+        probabilities.at(i) = exp(predicted.at(i)) / (1 + exp(predicted.at(i)));
+        if (probabilities.at(i) > 0.5) {
+            predictions.at(i) = 1;
+        } else {
+            predictions.at(i) = 0;
+        }
+    }
+
+    // Calculate accuracy, sensitivity, specificity
+    evaluate(predictions, testSurvived);
+
     return 0;
 }
 

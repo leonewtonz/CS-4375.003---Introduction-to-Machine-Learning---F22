@@ -18,3 +18,13 @@ glm1 <- glm(survived~sex, data = train, family="binomial")
 summary(glm1)
 ```
 
+
+### Evaluate on the test set
+
+```{r}
+probs <- predict(glm1, newdata=test, type="response")
+pred <- ifelse(probs>0.5, 1, 0)
+acc <- mean(pred==test$survived)
+print(paste("accuracy = ", acc))
+table(pred, test$survived)
+```
