@@ -33,20 +33,11 @@ vector<double> sigmoid(vector<double> z) {
 vector<double> multiply(vector<vector<double>> m1, vector<double> m2)
 {
     vector<double> resultMul(m1.size());
-    // for(int row = 0; row < m1.size(); row++) {
-    //     for(int col = 0; col < m1.at(0).size(); col++) {
-    //         for(int i = 0; i < m2.size(); i++) {
-    //             resultMul.at(row) += m1.at(row).at(i) * m2.at(col);
-    //         }
-    //     }
-    // }
-
     for(int row = 0; row < m1.size(); row++) {
         for(int col = 0; col < m1.at(0).size(); col++) {
                 resultMul.at(row) += m1.at(row).at(col) * m2.at(col) ;
             }
     }
-
     return resultMul;
 }
 
@@ -74,9 +65,9 @@ vector<double> addition(vector<double> m1, vector<double> m2)
 vector<vector<double>> transpose(vector<vector<double>> m)
 {
     vector<vector<double>> resultTrans(m.at(0).size(), vector<double>(m.size()));
-    for (int i = 0; i < m.size(); i++) {
-        for (int j = 0; j < m.at(0).size(); j++) {
-            resultTrans.at(j).at(i) = m.at(i).at(j);
+    for (int row = 0; row < m.size(); row++) {
+        for (int col = 0; col < m.at(0).size(); col++) {
+            resultTrans.at(col).at(row) = m.at(row).at(col);
         }
     }
     return resultTrans;
@@ -153,10 +144,10 @@ int main(int argc, char** argv)
         weights = addition(weights, temp);
     }
 
-    cout << "\nweights: ";
-    for(auto e : weights){
-         cout << e << " ";
-        }       
+    cout << "\nCofficients:\t\tw0" << "\t\t\t\t\tw1" << endl;
+    for(int i=0; i<weights.size(); i++){
+        cout << "\t\t\t" << weights.at(i);
+    }     
 // debug
     return 0;
 }
