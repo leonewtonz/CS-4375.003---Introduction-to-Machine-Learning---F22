@@ -24,7 +24,7 @@ Ability to understand and apply the following concepts in machine learning:
 - C++ Code [data_exploration_ldn190002.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Portfolio%20C%2B%2B%20data%20exploration/data_exploration_ldn190002.cpp)
 - Overview Document [Overview_Data Exploration_ldn190002.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Portfolio%20C%2B%2B%20data%20exploration/Overview_Data%20Exploration_ldn190002.pdf)
 
-## Linear Models
+## 3. Linear Models
 
 -	Exploring data using 2 types of linear model
 	+	Linear Regression. For documentation click here - [Regression.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Linear%20Models/Regression.pdf)
@@ -34,3 +34,6 @@ Ability to understand and apply the following concepts in machine learning:
 	+	confusionMatrix
 	+	ROCR Curve
 	+	Naive Bayes
+	
+## 4. ML from Scratch
+-	

@@ -27,8 +27,8 @@ Ability to understand and apply the following concepts in machine learning:
 ## Linear Models
 
 -	Exploring data using 2 types of linear model
-	+	Linear Regression. For documentation click [Regression.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Linear%20Models/Regression.pdf)
-	+	Logistic Regression. For documentation click [Classification.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Linear%20Models/Classification.pdf)
+	+	Linear Regression. For documentation click here - [Regression.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Linear%20Models/Regression.pdf)
+	+	Logistic Regression. For documentation click here [Classification.pdf](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Linear%20Models/Classification.pdf)
 
 -	Exploring different classification metrics
 	+	confusionMatrix
