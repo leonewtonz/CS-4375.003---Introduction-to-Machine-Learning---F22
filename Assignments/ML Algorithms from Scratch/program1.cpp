@@ -76,7 +76,7 @@ void evaluate(vector<double> preds, vector<double> test){
     double  sum = 0;
     int     size = test.size();
 
-    cout << "\n\nNumber of test samples: " << test.size();
+    // cout << "\n\nNumber of test samples: " << test.size();
     // Calculate the total correct predict
     for (int i=0; i<size; i++){
         if (preds.at(i) == test.at(i)){
@@ -98,30 +98,30 @@ void evaluate(vector<double> preds, vector<double> test){
             actualNotSurvived ++;
         }
     }
-    cout << "\nactualNotSurvived: " << actualNotSurvived;
+    // cout << "\nactualNotSurvived: " << actualNotSurvived;
 
     for (int i = 0; i<size; i++){
         if (preds.at(i) == 0){
             predictTotalNotSurvived ++;
         }
     }
-    cout << "\npredictTotalNotSurvived: " << predictTotalNotSurvived;
+    // cout << "\npredictTotalNotSurvived: " << predictTotalNotSurvived;
 
     for (int i = 0; i<size; i++){
         if(preds.at(i) == 0 && preds.at(i) == test.at(i)){
             tp ++;
         }
     }
-    cout << "\nTP: " << tp;
+    // cout << "\nTP: " << tp;
 
     fn = actualNotSurvived - tp;
-    cout << "\nFN: " << fn;
+    // cout << "\nFN: " << fn;
 
     fp = predictTotalNotSurvived - tp;
-    cout << "\nFP: " << fp;
+    // cout << "\nFP: " << fp;
 
     tn = size - (tp + fp + fn);
-    cout << "\nTN: " << tn;
+    // cout << "\nTN: " << tn;
 
     // Calculate the accuracy, sensitivity, specificity
     accuracy = sum / size;
@@ -141,7 +141,7 @@ int main(int argc, char** argv)
     string              line;
     
     const int           numTrain = 800;
-    const int           MAX_ITER = 100;
+    const int           MAX_ITER = 500000;
     const int           MAX_LEN = 1050;
     string              survived_in, sex_in, dummy;
     vector<double>      sex(MAX_LEN);
@@ -156,9 +156,9 @@ int main(int argc, char** argv)
     }
 
     // Read print out the heading line of csv file
-    cout << "Reading line 1" << endl;
-    getline(inFS, line);
-    cout << "Heading: " << line << endl;
+    // cout << "Reading line 1" << endl;
+    getline(inFS, line);  // Remove the heading
+    // cout << "Heading: " << line << endl;
 
     // Copy the survived column and sex column
     int index = 0;
@@ -200,13 +200,15 @@ int main(int argc, char** argv)
         testSex.at(k) = sex.at(i);
         k++;
     }
+
+    // Setup test set
     vector<vector<double>> testMatrix(numTest, vector<double>(2,1)); 
     int col = 1;
     for (int i = 0; i < testMatrix.size(); i++){   
         testMatrix[i][col] = testSex[i];  // Fill 2nd column with testSex
     }
 
-    // Set up weight vector, label vector, and data matrix
+    // Set up weight vector, label vector, and data matrix (Train set)
     vector<double> weights(2, 1);  // Two rows with initial value = 1 (w0 = w1 = 1)
     vector<double> labels(trainSurvived);
 
@@ -220,6 +222,7 @@ int main(int argc, char** argv)
     vector<double>     probVector(numTrain);
     vector<double>     error(numTrain);
 
+    auto start = std::chrono::steady_clock::now();  // Begin of training time of algorithm
     for (int iter = 0; iter < MAX_ITER; iter++){   
         probVector = sigmoid(multiply(dataMatrix, weights));
         error      = subtract(labels, probVector);
@@ -231,12 +234,15 @@ int main(int argc, char** argv)
         }
 
         weights = addition(weights, temp);
-    }
+    }                                               
+    auto end = std::chrono::steady_clock::now();  // End of training time of algorithm
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "\nElapsed time for training algorithm: " << elapsed_seconds.count() << "s\n";
 
-    // Printout Cofficients
+    // Printout Coefficients
     double w0 = weights.at(0);
     double w1 = weights.at(1);
-    cout << "\nCofficients:";
+    cout << "\nCoefficients:";
     cout << "\nw0: " << w0;
     cout << "\nw1: " << w1;
 

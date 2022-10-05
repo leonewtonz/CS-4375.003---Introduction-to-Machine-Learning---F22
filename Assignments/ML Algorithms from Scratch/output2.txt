@@ -1,0 +1,18 @@
+Open file titanic_project.csv
+Closing file titanic_project.csv
+
+Prior probability:
+Survived=no: 0.61
+Survived=no: 0.39
+
+Likehood values for p(pClass|survived)
+0.159836 0.840164 0.602459
+0.679487 0.320513 0.320513
+
+Likehood values for p(sex|survived)
+0.159836 0.840164
+0.679487 0.320513
+ageMean:
+30.4182 28.8261
+ageVar:
+205.153 209.155

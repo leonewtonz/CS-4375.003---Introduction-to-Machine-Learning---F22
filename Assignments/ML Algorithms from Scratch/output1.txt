@@ -1,0 +1,14 @@
+C:\Users\lichn\Documents\GitHub\CS-4375.003---Introduction-to-Machine-Learning---F22\Assignments\ML Algorithms from Scratch>program1_output
+Open file titanic_project.csv
+Closing file titanic_project.csv
+
+Elapsed time for training algorithm: 500.758s
+
+Coefficients:
+w0: 0.999877
+w1: -2.41086
+
+Accuracy: 0.785425
+Sensitivity: 0.863636
+Specificity: 0.695652
+C:\Users\lichn\Documents\GitHub\CS-4375.003---Introduction-to-Machine-Learning---F22\Assignments\ML Algorithms from Scratch>
