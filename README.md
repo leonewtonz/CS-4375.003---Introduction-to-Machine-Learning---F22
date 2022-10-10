@@ -39,3 +39,11 @@ Ability to understand and apply the following concepts in machine learning:
 -	Logistic Regression Model in C++. Click here for code [program1.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/program1.cpp)
 -	Naive Bayes Model in C++. Cick here for code [program2.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/program2.cpp)
 -	Overview of ML from Scratch. Click here for documentation [ML Algorithm from Scratch](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/ML%20Algorithm%20from%20Scratch.pdf)
+
+
+## 5. Searching for Similarity
+-	Notebook 1: Perform the Regression Modeling on Linear Regression, kNN and Decision Tree. [Notebook1_Regression](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook1_Regression.pdf)
+-	Notebook 2: Perform the Classification Modeling on Logistic Regression, kNN and Decision Tree. [Notebook2_Classification](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook2_Classification.pdf)
+-	Notebook 3: Perform kMean Clustering, Hierarchical Clustering [Notebook3_Clustering](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook3_Clustering.pdf)
+-	Notebook 4: Perform PCA and LDA Dimensionality Reduction [Notebook4_Dimensionality Reduction](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook4_Dimensionality%20Reduction.pdf)
+-	Narrative 
