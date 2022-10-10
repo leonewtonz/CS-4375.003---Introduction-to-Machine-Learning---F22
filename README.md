@@ -36,6 +36,6 @@ Ability to understand and apply the following concepts in machine learning:
 	+	Naive Bayes
 	
 ## 4. ML from Scratch
--	Logistic Regression Model in C++. Click here for code[program1.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/program1.cpp)
+-	Logistic Regression Model in C++. Click here for code [program1.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/program1.cpp)
 -	Naive Bayes Model in C++. Cick here for code [program2.cpp](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/program2.cpp)
 -	Overview of ML from Scratch. Click here for documentation [ML Algorithm from Scratch](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20Algorithms%20from%20Scratch/ML%20Algorithm%20from%20Scratch.pdf)
