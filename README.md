@@ -46,4 +46,4 @@ Ability to understand and apply the following concepts in machine learning:
 -	Notebook 2: Perform the Classification Modeling on Logistic Regression, kNN and Decision Tree. [Notebook2_Classification](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook2_Classification.pdf)
 -	Notebook 3: Perform kMean Clustering, Hierarchical Clustering [Notebook3_Clustering](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook3_Clustering.pdf)
 -	Notebook 4: Perform PCA and LDA Dimensionality Reduction [Notebook4_Dimensionality Reduction](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook4_Dimensionality%20Reduction.pdf)
--	Narrative 
+-	Searching for Similarity: Narrative document [Searching for Similarity](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Searching%20for%20Similarity.pdf)
