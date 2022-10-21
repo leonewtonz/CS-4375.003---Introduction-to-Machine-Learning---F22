@@ -1,0 +1,261 @@
+# Kernel and Ensemble Methods
+## SVM Classification
+
+#### CS 4375 - Intro to Machine Learning
+#### Dr. Karen Mazidi
+#### Author: 
+
+  *   Leo Nguyen - ldn190002
+  *   Cory Pekkala - cdp190005
+
+
+## Skin Segmentation Data Set
+
+**Data Set Information**
+
+-   The skin dataset is collected by randomly sampling B,G,R values from face images of various age groups (young, middle, and old), race groups (white, black, and asian), and genders obtained from FERET database and PAL database. Total learning sample size is 245057; out of which 50859 is the skin samples and 194198 is non-skin samples. Color FERET Image Database: [Web Link], PAL Face Database from Productive Aging Laboratory, The University of Texas at Dallas: [Web Link].
+
+**Citation:** 
+
+-   Rajen Bhatt, Abhinav Dhall, 'Skin Segmentation Dataset', UCI Machine Learning Repository
+-   https://archive.ics.uci.edu/ml/datasets/Skin+Segmentation
+
+**Attribute Information:**
+
+-   This dataset is of the dimension 245057 * 4 where first three columns are B,G,R (x1,x2, and x3 features) values and fourth column is of the class labels (decision variable y).
+
+
+### Load the data
+```{r}
+df_origin <- read.csv("data/Skin Segmentation.csv", header=TRUE)
+str(df_origin)
+dim(df_origin)
+```
+
+### Data Cleaning
+
+**Create a subsample by produce a subset randomly from a data frame**
+
+-   Just randomly pick up 10000 observations to create a subset
+
+```{r}
+set.seed(1234)
+df <- df_origin[sample(1:nrow(df_origin), 10000, replace = FALSE),]
+str(df)
+dim(df)
+```
+
+
+-   Convert column Skin to factor, and label them as Skin and NonSkin
+
+```{r}
+df$Skin <- factor(df$Skin)
+levels(df$Skin) <- c("Skin", "NonSkin")
+str(df)
+```
+
+### Divide into train, test, validate
+
+```{r}
+set.seed(1234)
+groups <- c(train=.6, test=.2, validate=.2)
+i <- sample(cut(1:nrow(df),
+nrow(df)*cumsum(c(0,groups)), labels=names(groups)))
+train <- df[i=="train",]
+test <- df[i=="test",]
+vald <- df[i=="validate",]
+```
+
+### Data Exploration
+
+1. Look at the first 10 rows in training data
+
+```{r}
+head(train, n=10)
+```
+
+
+2. View the summary of entire training data set
+
+```{r}
+summary(train)
+```
+
+3. Check the level, encoding matrix of Skin sample in training data
+
+```{r}
+levels(train$Skin)
+contrasts(train$Skin)
+```
+
+4. Summary statistics by group.
+
+```{r}
+aggregate(.~train$Skin, train, mean)
+```
+
+5. Number of sample is Skin and NonSkin
+
+```{r}
+table(train$Skin)
+```
+
+
+### Data Visualization using informative graph
+
+1. Using barplots to visualize the 2 factor level of Skin Sample
+
+```{r}
+counts <- table(train$Skin)
+barplot(counts, xlab="Skin Sample", ylab="Frequency", col=c("wheat", "seagreen"))
+
+```
+
+2. Visualize the relationship between Skin and B, G, R
+
+```{r}
+par(mfrow=c(1,3))
+plot(train$Skin, train$B, data = train, main = "Blue", col="blue")
+plot(train$Skin, train$G, data = train, main = "Green", col="green")
+plot(train$Skin, train$R, data = train, main = "Red", col="red")
+```
+
+### SVM Classitification with Linear
+
+**Building linear kernel with random cost=10**
+
+```{r}
+library(e1071)
+svm1 <- svm(Skin~., data=train, kernel="linear", cost=10, scale=TRUE)
+summary(svm1)
+```
+
+**Evaluate linear kernel with cost=10**
+
+```{r}
+pred1 <- predict(svm1, newdata = test)
+table(pred1, test$Skin)
+acc_ln <- mean(pred1==test$Skin)
+
+print(paste('Accuracy:', acc_ln))
+```
+
+-     Even with a random cost=10 we have a very good accuracy 92.3% for SVM linear kernel. It is because SVM works well when there is a clear cut between classes. As we can see on the boxplot above, there is a clear cut between Skin and NonSkin mean value of Red and Blue, 
+
+
+
+**Tuning cost hyperparameter**
+
+-   After tuning, the best cost value is 0.01
+
+```{r}
+set.seed(1234)
+tune_svm1 <- tune(svm, Skin~., data=vald, kernel="linear", ranges=list(cost=c(0.001, 0.01, 0.1, 1, 5, 10, 100)))
+summary(tune_svm1)
+```
+
+
+**Evaluate linear kernel with cost=0.01**
+
+```{r}
+pred1_tune <- predict(tune_svm1$best.model, newdata = test)
+table(pred1_tune, test$Skin)
+acc_ln_tune <- mean(pred1_tune==test$Skin)
+
+print(paste('Accuracy:', acc_ln_tune))
+```
+
+-   The accuracy improve from 92.3% to 94% because after tuning we have a better value for cost which is 0.01. This happen because the new cost hyper parameter was significantly reduce from 10 to 0.01. When we have smaller C hyper-parameter, it means we allow less slack variables on the model. This definitely improve the accuracy, but the model tend to be more overfiting.
+
+### SVM Classitification with polynomial
+
+**Building polynomial kernel with random cost=10**
+
+```{r}
+svm2 <- svm(Skin~., data=train, kernel="polynomial", cost=10, scale=TRUE)
+summary(svm2)
+```
+
+**Evaluate polynomial kernel with cost=10**
+
+```{r}
+pred2 <- predict(svm2, newdata = test)
+table(pred2, test$Skin)
+acc_poly <- mean(pred2==test$Skin)
+
+print(paste('Accuracy:', acc_poly))
+```
+
+-   When we use the same c=10 without tuning on SVM polynomial kernel the accuracy improve quite a a bit compare to linear kernel. It is because the polynomial provide a higher and more complex shape on hyperplanes. Now, we can map the data to a higher dimension which have better chance to separate the classes correctly. 
+
+**Tuning cost hyperparameter**
+
+-   After tuning, the best cost value is 100
+
+```{r}
+set.seed(1234)
+tune_svm2 <- tune(svm, Skin~., data=vald, kernel="polynomial", ranges=list(cost=c(0.001, 0.01, 0.1, 1, 5, 10, 100)))
+summary(tune_svm2)
+```
+
+**Evaluate polynomial kernel with cost=100**
+
+```{r}
+pred2_tune <- predict(tune_svm2$best.model, newdata = test)
+table(pred2_tune, test$Skin)
+acc_poly_tune <- mean(pred2_tune==test$Skin)
+
+print(paste('Accuracy:', acc_poly_tune))
+```
+
+-   The accuracy reduce from 95% to 94.35% on SVM polynomial kernel because after tunning, the new cost increase from 10 to 100. When the cost increase, more slack variable allow which mean the accuracy will decrease. This is happen because the main objective of SVM to find the best separating hyperplanes with the largest margin value. So in the case, best model is the compromise between reduce overfitting  and increase the margin on support vector. 
+
+
+### SVM Classitification with radial
+
+**Building radial kernel with random cost=10, gamma=1**
+
+```{r}
+svm3 <- svm(Skin~., data=train, kernel="radial", cost=10, gamma=1, scale=TRUE)
+summary(svm3)
+```
+
+**Evaluate radial kernel with cost=10, gamma=1**
+
+```{r}
+pred3 <- predict(svm3, newdata = test)
+table(pred3, test$Skin)
+acc_rad <- mean(pred3==test$Skin)
+
+print(paste('Accuracy:', acc_rad))
+```
+
+-   The SVM radial kernel has the best accuracy so far 99.9%. It is because the radial have the highest and most complex dimension compare to linear and polynomial. However, because we randomly choose the small cost = 10 and large gamma=1, the model tend to be overfiting which explain a very high accuracy.
+
+**Tuning cost and gamma hyperparameter**
+
+-   After tuning, the best cost value is 100, and gamma is 0.5
+
+```{r}
+set.seed(1234)
+tune_svm3 <- tune(svm, Skin~., data=vald, kernel="radial", ranges=list(cost=c(0.001, 0.01, 0.1, 1, 5, 10, 100),
+                                                                       gamma=c(0.5,1,2,3,4)))
+summary(tune_svm3)
+```
+
+**Evaluate radial kernel with cost=100, gamma=0.5**
+
+```{r}
+pred3_tune <- predict(tune_svm3$best.model, newdata = test)
+table(pred3_tune, test$Skin)
+acc_rad_tune <- mean(pred3_tune==test$Skin)
+
+print(paste('Accuracy:', acc_rad_tune))
+```
+
+-   The accuracy reduce from 99.9% to 99.75% because after tuning we have larger cost=100 and smaller gamma=0.5. These new value reduce the overfitting on the model. This happen with same reason on polynomial kernel, the SVM main objective is find the best separating hyperplane with the biggest margin. SO after tuning, and considering all these factor the algorithm pick up these value. 
+
+
+### Conclusion
+
+-   The SVM model will have the better accuracy when we increase the higher dimension and more complex shape on separating hyperplane from linear to polynomial and finally to radial. In general after tuning, we will gave the better accuracy with new tuned hyper-parameter. But it is not always the case, because, we want a model that can generalize the data than the model tend to be overfitting. This is also the main objective of SVM model, it need to find the best separating hyperplan with largest margin. That is why sometime, we have the accuracy reduce after tuned value. 

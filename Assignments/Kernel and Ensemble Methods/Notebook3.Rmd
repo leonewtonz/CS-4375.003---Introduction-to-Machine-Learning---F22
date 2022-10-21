@@ -1,0 +1,254 @@
+# Kernel and Ensemble Methods
+## Ensemble Techniques
+
+#### CS 4375 - Intro to Machine Learning
+#### Dr. Karen Mazidi
+#### Author: 
+
+  *   Leo Nguyen - ldn190002
+  *   Cory Pekkala - cdp190005
+
+
+## Skin Segmentation Data Set
+
+**Data Set Information**
+
+-   The skin dataset is collected by randomly sampling B,G,R values from face images of various age groups (young, middle, and old), race groups (white, black, and asian), and genders obtained from FERET database and PAL database. Total learning sample size is 245057; out of which 50859 is the skin samples and 194198 is non-skin samples. Color FERET Image Database: [Web Link], PAL Face Database from Productive Aging Laboratory, The University of Texas at Dallas: [Web Link].
+
+**Citation:** 
+
+-   Rajen Bhatt, Abhinav Dhall, 'Skin Segmentation Dataset', UCI Machine Learning Repository
+-   https://archive.ics.uci.edu/ml/datasets/Skin+Segmentation
+
+**Attribute Information:**
+
+-   This dataset is of the dimension 245057 * 4 where first three columns are B,G,R (x1,x2, and x3 features) values and fourth column is of the class labels (decision variable y).
+
+
+### Load the data
+```{r}
+df_origin <- read.csv("data/Skin Segmentation.csv", header=TRUE)
+str(df_origin)
+dim(df_origin)
+```
+
+### Data Cleaning
+
+**Create a subsample by produce a subset randomly from a data frame**
+
+-   Just randomly pick up 10000 observations to create a subset
+
+```{r}
+set.seed(1234)
+df <- df_origin[sample(1:nrow(df_origin), 10000, replace = FALSE),]
+str(df)
+dim(df)
+```
+
+
+-   Convert column Skin to factor, and label them as Skin and NonSkin
+
+```{r}
+df$Skin <- factor(df$Skin)
+levels(df$Skin) <- c("Skin", "NonSkin")
+str(df)
+```
+
+### Divide into train, test (80/20)
+
+```{r}
+set.seed(1234)
+i <- sample(1:nrow(df), 0.8*nrow(df), replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+### Data Exploration
+
+1. View the summary of entire training data set
+
+```{r}
+summary(train)
+```
+2. Skin factor encoding
+
+```{r}
+contrasts(train$Skin)
+```
+
+
+### Data Visualization using informative graph
+
+1. Using barplots to visualize the 2 factor level of Skin Sample
+
+```{r}
+counts <- table(train$Skin)
+barplot(counts, xlab="Skin Sample", ylab="Frequency", col=c("wheat", "seagreen"))
+
+```
+
+2. Visualize the relationship between Skin and B, G, R
+
+```{r}
+par(mfrow=c(1,3))
+plot(train$Skin, train$B, data = train, main = "Blue", col="blue")
+plot(train$Skin, train$G, data = train, main = "Green", col="green")
+plot(train$Skin, train$R, data = train, main = "Red", col="red")
+```
+
+**Install mltools: Machine Learning Tool**
+
+-   This package will be used to calculate the MATTHEW’S CORRELATION COEFFICIENT (mcc) which an important to indicate the differences in class distribution
+
+-   To use library(mltools), you need to install package mltools. You only need to install this package once.
+
+-   Type install.packages("mltools") in the Console to install the package
+
+
+```{r}
+library(mltools)
+```
+
+
+### Decision Tree
+
+**Building Decision Tree as baseline model**
+
+```{r}
+library(tree)
+tree <- tree(Skin~., data=train)
+tree
+summary(tree)
+```
+
+**Plotting Decision Tree**
+
+-   Plotting Decision Tree to get a visualization on the model
+
+
+```{r}
+plot(tree)
+text(tree, cex=0.5, pretty=0)
+```
+
+
+**Evaluate Decision Tree**
+
+```{r}
+pred_dt <- predict(tree, newdata = test, type="class")
+table(pred_dt, test$Skin)
+acc_dt <- mean(pred_dt==test$Skin)
+mcc_dt <- mcc(pred_dt, test$Skin)
+
+print(paste('Accuracy:', acc_dt))
+print(paste('mcc:', mcc_dt))
+```
+
+### Random Forest
+
+**Building Random Forest Model**
+
+```{r}
+library(randomForest)
+set.seed(1234)
+rf <- randomForest(Skin~., data=train, importance=TRUE)
+rf
+summary(rf)
+```
+
+
+**Evaluate Random Forest**
+
+```{r}
+pred_rf <- predict(rf, newdata = test, type="response")
+table(pred_rf, test$Skin)
+acc_rf <- mean(pred_rf==test$Skin)
+mcc_rf <- mcc(pred_rf, test$Skin)
+
+print(paste('Accuracy:', acc_rf))
+print(paste('mcc:', mcc_rf))
+```
+### AdaBoost
+
+**Building Adaboost**
+
+```{r}
+library(adabag)
+adab1 <- boosting(Skin~., data=train, boos=TRUE, mfinal=20, coeflearn='Breiman')
+summary(adab1)
+```
+
+**Evaluate Adaboost**
+
+```{r}
+pred_adabag <- predict(adab1, newdata = test, type="response")
+table(pred_adabag$class, test$Skin)
+acc_adabag <- mean(pred_adabag$class==test$Skin)
+mcc_adabag <- mcc(factor(pred_adabag$class), test$Skin)
+
+print(paste('Accuracy:', acc_adabag))
+print(paste('mcc:', mcc_adabag))
+```
+
+
+### XGBoost
+
+**Building XGBoost**
+
+- debug
+
+```{r}
+as.integer(train$Skin)
+train$Skin
+str(train)
+```
+
+
+
+
+```{r}
+library(xgboost)
+train_label <- ifelse(as.integer(train$Skin)==2, 1, 0)
+#train_label
+train_matrix <- data.matrix(train[, -4])
+xg <- xgboost(data=train_matrix, label=train_label,
+                 nrounds=100, objective='binary:logistic')
+```
+
+```{r}
+xg
+```
+
+
+**Evaluate XGBoost**
+
+
+- debug
+
+```{r}
+as.integer(test$Skin)
+test$Skin
+str(test)
+```
+
+
+```{r}
+test_label <- ifelse(as.integer(test$Skin)==2, 1, 0)
+test_matrix <- data.matrix(test[, -4])
+test_matrix
+probs <- predict(xg, test_matrix)
+probs
+pred <- ifelse(probs>0.5, 1, 0)
+acc_xg <- mean(pred==test_label)
+mcc_xg <- mcc(pred, test_label)
+print(paste("accuracy=", acc_xg))
+print(paste("mcc=", mcc_xg))
+
+```
+
+
+
+
+### Conclusion
+
+-   The SVM model will have the better accuracy when we increase the higher dimension and more complex shape on separating hyperplane from linear to polynomial and finally to radial. In general after tuning, we will gave the better accuracy with new tuned hyper-parameter. But it is not always the case, because, we want a model that can generalize the data than the model tend to be overfitting. This is also the main objective of SVM model, it need to find the best separating hyperplan with largest margin. That is why sometime, we have the accuracy reduce after tuned value. 
