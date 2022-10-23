@@ -45,7 +45,6 @@ str(df)
 dim(df)
 ```
 
-
 -   Convert column Skin to factor, and label them as Skin and NonSkin
 
 ```{r}
@@ -96,21 +95,18 @@ plot(train$Skin, train$G, data = train, main = "Green", col="green")
 plot(train$Skin, train$R, data = train, main = "Red", col="red")
 ```
 
+
+### Decision Tree
+
 **Install mltools: Machine Learning Tool**
 
 -   This package will be used to calculate the MATTHEW’S CORRELATION COEFFICIENT (mcc) which an important to indicate the differences in class distribution
 
--   To use library(mltools), you need to install package mltools. You only need to install this package once.
-
--   Type install.packages("mltools") in the Console to install the package
-
-
 ```{r}
+install.packages("mltools")
 library(mltools)
 ```
 
-
-### Decision Tree
 
 **Building Decision Tree as baseline model**
 
@@ -168,6 +164,38 @@ mcc_rf <- mcc(pred_rf, test$Skin)
 print(paste('Accuracy:', acc_rf))
 print(paste('mcc:', mcc_rf))
 ```
+
+
+### XGBoost
+
+**Building XGBoost**
+
+
+```{r}
+library(xgboost)
+train_label <- ifelse(as.integer(train$Skin)==2, 1, 0)
+train_matrix <- data.matrix(train[, -4])
+xg <- xgboost(data=train_matrix, label=train_label,
+                 nrounds=100, objective='binary:logistic')
+xg
+```
+
+
+**Evaluate XGBoost**
+
+
+```{r}
+test_label <- ifelse(as.integer(test$Skin)==2, 1, 0)
+test_matrix <- data.matrix(test[, -4])
+probs <- predict(xg, test_matrix)
+pred <- ifelse(probs>0.5, 1, 0)
+acc_xg <- mean(pred==test_label)
+mcc_xg <- mcc(pred, test_label)
+print(paste("accuracy=", acc_xg))
+print(paste("mcc=", mcc_xg))
+
+```
+
 ### AdaBoost
 
 **Building Adaboost**
@@ -189,65 +217,6 @@ mcc_adabag <- mcc(factor(pred_adabag$class), test$Skin)
 print(paste('Accuracy:', acc_adabag))
 print(paste('mcc:', mcc_adabag))
 ```
-
-
-### XGBoost
-
-**Building XGBoost**
-
-- debug
-
-```{r}
-as.integer(train$Skin)
-train$Skin
-str(train)
-```
-
-
-
-
-```{r}
-library(xgboost)
-train_label <- ifelse(as.integer(train$Skin)==2, 1, 0)
-#train_label
-train_matrix <- data.matrix(train[, -4])
-xg <- xgboost(data=train_matrix, label=train_label,
-                 nrounds=100, objective='binary:logistic')
-```
-
-```{r}
-xg
-```
-
-
-**Evaluate XGBoost**
-
-
-- debug
-
-```{r}
-as.integer(test$Skin)
-test$Skin
-str(test)
-```
-
-
-```{r}
-test_label <- ifelse(as.integer(test$Skin)==2, 1, 0)
-test_matrix <- data.matrix(test[, -4])
-test_matrix
-probs <- predict(xg, test_matrix)
-probs
-pred <- ifelse(probs>0.5, 1, 0)
-acc_xg <- mean(pred==test_label)
-mcc_xg <- mcc(pred, test_label)
-print(paste("accuracy=", acc_xg))
-print(paste("mcc=", mcc_xg))
-
-```
-
-
-
 
 ### Conclusion
 
