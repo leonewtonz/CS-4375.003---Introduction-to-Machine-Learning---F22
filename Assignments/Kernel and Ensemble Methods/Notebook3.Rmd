@@ -102,8 +102,9 @@ plot(train$Skin, train$R, data = train, main = "Red", col="red")
 
 -   This package will be used to calculate the MATTHEW’S CORRELATION COEFFICIENT (mcc) which an important to indicate the differences in class distribution
 
+-   You can install the package by typing install.packages("mltools") on the console
+
 ```{r}
-install.packages("mltools")
 library(mltools)
 ```
 
@@ -131,14 +132,21 @@ text(tree, cex=0.5, pretty=0)
 **Evaluate Decision Tree**
 
 ```{r}
+startTime <- Sys.time()
 pred_dt <- predict(tree, newdata = test, type="class")
+endTime <- Sys.time()
+
 table(pred_dt, test$Skin)
 acc_dt <- mean(pred_dt==test$Skin)
 mcc_dt <- mcc(pred_dt, test$Skin)
+runtime_dt <- endTime - startTime
 
 print(paste('Accuracy:', acc_dt))
 print(paste('mcc:', mcc_dt))
+print(paste('Runtime in seconds:', runtime_dt))
 ```
+
+-   The Decision Tree (DT) get a very high accuracy = 0.984. This indicate DT is very good model. Moreover, the mcc=0.95545 is also very high which further more confirm that. It is because, the accuracy by itself is not work well when the data is in balance which is the case of our dataset (mentioned in the dataset description above:  50859 is the skin samples and 194198 is non-skin samples). In this case, the accuracy alone will provide an overoptimistic estimation based on the majority class. By combining the mcc into the evaluation we can double check and verify this overoptimistic estimation. The mcc=0.95545 very close to 1 which indicate the total agreement between test data and predict data
 
 ### Random Forest
 
@@ -156,15 +164,21 @@ summary(rf)
 **Evaluate Random Forest**
 
 ```{r}
+startTime <- Sys.time()
 pred_rf <- predict(rf, newdata = test, type="response")
+endTime <- Sys.time()
+
 table(pred_rf, test$Skin)
 acc_rf <- mean(pred_rf==test$Skin)
 mcc_rf <- mcc(pred_rf, test$Skin)
+runtime_rf <- endTime - startTime
 
 print(paste('Accuracy:', acc_rf))
 print(paste('mcc:', mcc_rf))
+print(paste('Runtime in seconds:', runtime_rf))
 ```
 
+-   As an ensemble model,the Random Forest (RF) improve the accuracy and mcc further more by using parallel ensemble method-bagging with DT as individual model. Both accuracy=0.999 and mcc=0.99711 is very high, they are almost 100%. When looking at the RT model summary, we can see that by using 500 different DT, we can get different value on accuracy and mcc. Then when combine all this prediction together, we can achieve a final prediction which much higher accuracy and mcc compare to base model.
 
 ### XGBoost
 
@@ -185,16 +199,24 @@ xg
 
 
 ```{r}
+startTime <- Sys.time()
 test_label <- ifelse(as.integer(test$Skin)==2, 1, 0)
 test_matrix <- data.matrix(test[, -4])
 probs <- predict(xg, test_matrix)
 pred <- ifelse(probs>0.5, 1, 0)
+endTime <- Sys.time()
+
 acc_xg <- mean(pred==test_label)
 mcc_xg <- mcc(pred, test_label)
+runtime_xg <- endTime - startTime
+
 print(paste("accuracy=", acc_xg))
 print(paste("mcc=", mcc_xg))
+print(paste('Runtime in seconds:', runtime_xg))
 
 ```
+-   The XGBoost is also an ensemble method, that is why we can see improvement on accuracy=0.9985 and mcc=0.99567 compare to DT. However, it is slightly lower than the Random Forest. This could be because in this specific XGBoost model, we only use 100 iterations which is much less than 500 trees in Random Forest. It mean we still have room to improve the accuracy and mcc by increasing the number of iteration when building the model. Due to it unique algorithm, the XGBoost also the fast model in all 4 example models: Decision Tree, Random Forest, AdaBoost and XGBoost. It has the lowest runtime among 4 models.
+
 
 ### AdaBoost
 
@@ -209,15 +231,22 @@ summary(adab1)
 **Evaluate Adaboost**
 
 ```{r}
+startTime <- Sys.time()
 pred_adabag <- predict(adab1, newdata = test, type="response")
+endTime <- Sys.time()
+
 table(pred_adabag$class, test$Skin)
 acc_adabag <- mean(pred_adabag$class==test$Skin)
 mcc_adabag <- mcc(factor(pred_adabag$class), test$Skin)
+runtime_adabag <- endTime - startTime
 
 print(paste('Accuracy:', acc_adabag))
 print(paste('mcc:', mcc_adabag))
+print(paste('Runtime in seconds:', runtime_adabag))
 ```
+-   The AdaBoost also achieve a very high accuracy=0.999 and mcc=0.99711 which is no surprise there. It is because AdaBoost is an ensemble model. However, it use different methods compare to the Random Forest(parallel), AdaBoost is sequential. There is some trade off to achieve this high accuracy and mcc value, the AdaBoost the is the lowest model among 4. It is because of its natural, a sequential method.
 
 ### Conclusion
 
--   The SVM model will have the better accuracy when we increase the higher dimension and more complex shape on separating hyperplane from linear to polynomial and finally to radial. In general after tuning, we will gave the better accuracy with new tuned hyper-parameter. But it is not always the case, because, we want a model that can generalize the data than the model tend to be overfitting. This is also the main objective of SVM model, it need to find the best separating hyperplan with largest margin. That is why sometime, we have the accuracy reduce after tuned value. 
+-   The Decision Tree can provide a decent accuracy and good mcc value. By using other ensemble model we can achieve an even higher accuracy and mcc value. Then using the DT as a base model, we can see that Random Forest, XGBoost and AdaBoost provide a much higher accuracy and mcc value. However, there is a trade off on the runtime. If the ensemble model is parallel (like in Random Forest), we can get both good accuracy and good runtime. If the model is sequenstial (like AdaBoost), we can get a good accuracy but the runtime increase compare to base model (Decision Tree). Another case  is XGBoost model. It is the fastest model with lowest runtime compare from both base model and ensemble model. However, there some trade off as the accuracy and mcc slightly reduce compare with other ensemble model, but it is still higher than base model.
+
