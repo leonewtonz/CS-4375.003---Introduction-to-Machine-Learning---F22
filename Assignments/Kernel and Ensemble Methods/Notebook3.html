@@ -568,7 +568,7 @@ print(paste(&#39;Accuracy:&#39;, acc_dt))</code></pre>
 <pre class="r"><code>print(paste(&#39;mcc:&#39;, mcc_dt))</code></pre>
 <pre><code>## [1] &quot;mcc: 0.955452740408774&quot;</code></pre>
 <pre class="r"><code>print(paste(&#39;Runtime in seconds:&#39;, runtime_dt))</code></pre>
-<pre><code>## [1] &quot;Runtime in seconds: 0.0612540245056152&quot;</code></pre>
+<pre><code>## [1] &quot;Runtime in seconds: 0.0510590076446533&quot;</code></pre>
 <ul>
 <li>The Decision Tree (DT) get a very high accuracy = 0.984. This
 indicate DT is very good model. Moreover, the mcc=0.95545 is also very
@@ -644,7 +644,7 @@ print(paste(&#39;Accuracy:&#39;, acc_rf))</code></pre>
 <pre class="r"><code>print(paste(&#39;mcc:&#39;, mcc_rf))</code></pre>
 <pre><code>## [1] &quot;mcc: 0.99711389114366&quot;</code></pre>
 <pre class="r"><code>print(paste(&#39;Runtime in seconds:&#39;, runtime_rf))</code></pre>
-<pre><code>## [1] &quot;Runtime in seconds: 0.0704479217529297&quot;</code></pre>
+<pre><code>## [1] &quot;Runtime in seconds: 0.0711369514465332&quot;</code></pre>
 <ul>
 <li>As an ensemble model,the Random Forest (RF) improve the accuracy and
 mcc further more by using parallel ensemble method-bagging with DT as
@@ -807,7 +807,7 @@ print(paste(&quot;accuracy=&quot;, acc_xg))</code></pre>
 <pre class="r"><code>print(paste(&quot;mcc=&quot;, mcc_xg))</code></pre>
 <pre><code>## [1] &quot;mcc= 0.995677412505583&quot;</code></pre>
 <pre class="r"><code>print(paste(&#39;Runtime in seconds:&#39;, runtime_xg))</code></pre>
-<pre><code>## [1] &quot;Runtime in seconds: 0.0183329582214355&quot;</code></pre>
+<pre><code>## [1] &quot;Runtime in seconds: 0.0167930126190186&quot;</code></pre>
 <ul>
 <li>The XGBoost is also an ensemble method, that is why we can see
 improvement on accuracy=0.9985 and mcc=0.99567 compare to DT. However,
@@ -868,7 +868,7 @@ print(paste(&#39;Accuracy:&#39;, acc_adabag))</code></pre>
 <pre class="r"><code>print(paste(&#39;mcc:&#39;, mcc_adabag))</code></pre>
 <pre><code>## [1] &quot;mcc: 0.99711389114366&quot;</code></pre>
 <pre class="r"><code>print(paste(&#39;Runtime in seconds:&#39;, runtime_adabag))</code></pre>
-<pre><code>## [1] &quot;Runtime in seconds: 0.223094940185547&quot;</code></pre>
+<pre><code>## [1] &quot;Runtime in seconds: 0.167912006378174&quot;</code></pre>
 <ul>
 <li>The AdaBoost also achieve a very high accuracy=0.999 and mcc=0.99711
 which is no surprise there. It is because AdaBoost is an ensemble model.
@@ -881,8 +881,8 @@ model among 4. It is because of its natural, a sequential method.</li>
 <div id="conclusion" class="section level3">
 <h3>Conclusion</h3>
 <ul>
-<li>The Decision Tree can provide a decent accuracy and good mcc value.
-By using other ensemble model we can achieve an even higher accuracy and
+<li>The Decision Tree can provide a good accuracy and good mcc value. By
+using other ensemble model we can achieve an even higher accuracy and
 mcc value. Then using the DT as a base model, we can see that Random
 Forest, XGBoost and AdaBoost provide a much higher accuracy and mcc
 value. However, there is a trade off on the runtime. If the ensemble
