@@ -47,3 +47,14 @@ Ability to understand and apply the following concepts in machine learning:
 -	Notebook 3: Perform kMean Clustering, Hierarchical Clustering [Notebook3_Clustering](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook3_Clustering.pdf)
 -	Notebook 4: Perform PCA and LDA Dimensionality Reduction [Notebook4_Dimensionality Reduction](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Notebook4_Dimensionality%20Reduction.pdf)
 -	Searching for Similarity: Narrative document [Searching for Similarity](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Similarity/Searching%20for%20Similarity.pdf)
+
+
+## 6. Kernel and Ensemble Methods
+
+-	Notebook 1: Perform SVM regression, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters.
+-	Notebook 2: Perform SVM classification, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters.
+-	Notebook 3: Perform machine learning with decision tree as a baseline. Then try Random Forest, XGBoost, and AdaBoost to compare the metrics and runtime
+-	Narrative document:
+	+	Explain how SVM works, and how SVM kernels work, your impression the strengths and weaknesses of SVM
+	
+	+	Explain how Random Forest works, how the other 2 algorithms you used work compared to the simple decision tree, your impression of the strengths and weaknesses of these ensemble techniques
