@@ -51,9 +51,12 @@ Ability to understand and apply the following concepts in machine learning:
 
 ## 6. Kernel and Ensemble Methods
 
--	Notebook 1: Perform SVM regression, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters.
--	Notebook 2: Perform SVM classification, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters.
--	Notebook 3: Perform machine learning with decision tree as a baseline. Then try Random Forest, XGBoost, and AdaBoost to compare the metrics and runtime
+-	Notebook 1: Perform SVM regression, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters. [Notebook1_SVM Regression](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Kernel%20and%20Ensemble%20Methods/Notebook1.pdf)
+
+-	Notebook 2: Perform SVM classification, trying linear, polynomial, and radial kernels with various C and gamma hyper-parameters. [Notebook2_SVM Classification](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Kernel%20and%20Ensemble%20Methods/Notebook2.pdf)
+
+-	Notebook 3: Perform machine learning with decision tree as a baseline. Then try Random Forest, XGBoost, and AdaBoost to compare the metrics and runtime. [Notebook3_Ensemble Methods](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Kernel%20and%20Ensemble%20Methods/Notebook3.pdf)
+
 -	Narrative document:
 	+	Explain how SVM works, and how SVM kernels work, your impression the strengths and weaknesses of SVM
 	
