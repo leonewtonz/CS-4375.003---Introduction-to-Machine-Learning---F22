@@ -57,7 +57,8 @@ Ability to understand and apply the following concepts in machine learning:
 
 -	Notebook 3: Perform machine learning with decision tree as a baseline. Then try Random Forest, XGBoost, and AdaBoost to compare the metrics and runtime. [Notebook3_Ensemble Methods](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Kernel%20and%20Ensemble%20Methods/Notebook3.pdf)
 
--	Narrative document:
+-	Narrative document: [NarrativeDocument](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/Kernel%20and%20Ensemble%20Methods/NarrativeDocument.pdf)
+-	
 	+	Explain how SVM works, and how SVM kernels work, your impression the strengths and weaknesses of SVM
 	
 	+	Explain how Random Forest works, how the other 2 algorithms you used work compared to the simple decision tree, your impression of the strengths and weaknesses of these ensemble techniques
