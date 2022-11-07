@@ -62,3 +62,5 @@ Ability to understand and apply the following concepts in machine learning:
 	+	Explain how SVM works, and how SVM kernels work, your impression the strengths and weaknesses of SVM
 	
 	+	Explain how Random Forest works, how the other 2 algorithms you used work compared to the simple decision tree, your impression of the strengths and weaknesses of these ensemble techniques
+
+## 7. ML with sklearn
