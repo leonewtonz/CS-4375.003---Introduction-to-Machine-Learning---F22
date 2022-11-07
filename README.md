@@ -64,3 +64,11 @@ Ability to understand and apply the following concepts in machine learning:
 	+	Explain how Random Forest works, how the other 2 algorithms you used work compared to the simple decision tree, your impression of the strengths and weaknesses of these ensemble techniques
 
 ## 7. ML with sklearn
+
+Objectives:
+
+• Gain experience with machine learning in sklearn on a small data set
+• Compare experience in R versus sklearn
+• Perform the Logistic Regression, Decision Tree, Neural Network on data set
+
+Document: [ML with sklearn](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20with%20sklearn/ML%20with%20sklearn.pdf)
