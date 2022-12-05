@@ -72,3 +72,18 @@ Objectives:
 • Perform the Logistic Regression, Decision Tree, Neural Network on data set
 
 Document: [ML with sklearn](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20with%20sklearn/ML%20with%20sklearn.pdf)
+
+## 8. Image Classification
+
+-	Objectives:
+
+	• Gain experience with Keras
+	• Gain experience with text classification
+	• Gain experience with deep learning model variations and embeddings
+	
+	Try 4 different approaches: Dense Sequential, CNN, Pretrain Model Using MobileNet 
+	
+	Document [Image_Classification]()
+	
+-	Dataset from Kaggle : Intel Image Classification
+https://www.kaggle.com/code/mostafaeltalawy/image-classification-using-keras/data
