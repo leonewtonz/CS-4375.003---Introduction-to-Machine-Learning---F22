@@ -68,10 +68,13 @@ Ability to understand and apply the following concepts in machine learning:
 Objectives:
 
 • Gain experience with machine learning in sklearn on a small data set
+
 • Compare experience in R versus sklearn
+
 • Perform the Logistic Regression, Decision Tree, Neural Network on data set
 
 Document: [ML with sklearn](https://github.com/leonewtonz/CS-4375.003---Introduction-to-Machine-Learning---F22/blob/main/Assignments/ML%20with%20sklearn/ML%20with%20sklearn.pdf)
+<<<<<<< HEAD
 
 ## 8. Image Classification
 
@@ -87,3 +90,5 @@ Document: [ML with sklearn](https://github.com/leonewtonz/CS-4375.003---Introduc
 	
 -	Dataset from Kaggle : Intel Image Classification
 https://www.kaggle.com/code/mostafaeltalawy/image-classification-using-keras/data
+=======
+>>>>>>> 050f48c313dae7b2b925de3b5ff88f27e845209d
